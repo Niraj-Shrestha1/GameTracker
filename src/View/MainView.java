@@ -4,6 +4,11 @@
  */
 package View;
 
+
+import Model.GameManager;
+import Model.Game;
+import Controller.GameController;
+import javax.swing.JOptionPane;
 /**
  *
  * @author Niraj Shrestha
@@ -15,10 +20,50 @@ public class MainView extends javax.swing.JFrame {
     /**
      * Creates new form MainView
      */
-    public MainView() {
-        initComponents();
+    public MainView() { 
+    initComponents();
+        setupActions();
     }
-
+    
+    private void setupActions() {
+        // Admin button action
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                JOptionPane.showMessageDialog(MainView.this,
+                    "Admin panel will be available in final submission",
+                    "Coming Soon",
+                    JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        
+        // Viewer button action - Launch Viewer Dashboard
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                // Create and show Viewer Dashboard
+                ViewerView viewerDashboard = new ViewerView();
+                
+                // Create Model with sample data
+                GameManager gameManager = new GameManager();
+                gameManager.addGame(new Game("Minecraft", "PC", 2011, "Adventure"));
+                gameManager.addGame(new Game("The Last of Us", "PlayStation", 2013, "Action"));
+                gameManager.addGame(new Game("Super Mario Odyssey", "Nintendo Switch", 2017, "Platformer"));
+                
+                // Create Controller (using your existing GameController)
+                GameController controller = new GameController(gameManager, viewerDashboard);
+                
+                // Set window properties
+                viewerDashboard.setVisible(true);
+                viewerDashboard.setSize(900, 700);
+                viewerDashboard.setLocationRelativeTo(null); // Center window
+                viewerDashboard.setTitle("Game Tracker - Viewer Dashboard");
+                
+                // Close welcome screen
+                MainView.this.dispose();
+            }
+        });
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -28,52 +73,49 @@ public class MainView extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setLayout(new java.awt.BorderLayout());
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Game Tracker");
+        getContentPane().add(jLabel1, java.awt.BorderLayout.PAGE_START);
 
-        jLabel1.setText("My Game Collection");
-        jPanel1.add(jLabel1, java.awt.BorderLayout.PAGE_START);
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("Welcome to Game Tracker");
+        getContentPane().add(jLabel2, java.awt.BorderLayout.CENTER);
 
-        jButton1.setText("Add Games");
-        jPanel1.add(jButton1, java.awt.BorderLayout.LINE_END);
+        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jButton1.setText("Admin");
+        jPanel1.add(jButton1);
 
-        jButton2.setText("Show Games");
-        jPanel1.add(jButton2, java.awt.BorderLayout.PAGE_END);
+        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jButton2.setText("Viewer");
+        jPanel1.add(jButton2);
 
-        jButton3.setText("Exit");
-        jPanel1.add(jButton3, java.awt.BorderLayout.LINE_START);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        getContentPane().add(jPanel1, java.awt.BorderLayout.PAGE_END);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+     public javax.swing.JButton getAdminButton() {
+        return jButton1;
+    }
+    
+    public javax.swing.JButton getViewerButton() {
+        return jButton2;
+    }
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
+    try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
@@ -86,14 +128,15 @@ public class MainView extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new MainView().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> {new MainView().setVisible(true);
+    });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }
