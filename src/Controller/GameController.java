@@ -11,21 +11,125 @@ public class GameController {
     private GameManager gameManager;
     private ViewerView view;
     
-    // Track which game is being edited
-    private int editingGameIndex = -1;
-    
     public GameController(GameManager manager, ViewerView view) {
         this.gameManager = manager;
         this.view = view;
         
         setupActions();
-        showViewPanel(); // Start with view panel
+        showHomePanel(); 
         refreshGamesTable();
         updateSelectionCombos();
+        updateHomePanel();
     }
     
+    // Method to update home panel
+public void updateHomePanel() {
+    if (view.getHomeTotalValueLabel() == null) return;
+    
+    // Get statistics
+    int total = gameManager.getAllGames().size();
+    int recent = gameManager.getRecentGames().size();
+    String popularGenre = getMostPopularGenre();
+    
+    // Update labels
+    view.getHomeTotalValueLabel().setText(String.valueOf(total));
+    view.getHomeRecentValueLabel().setText(String.valueOf(recent));
+    view.getHomeGenreValueLabel().setText(popularGenre);
+    
+    // Update recent games list
+    updateRecentGamesList();
+}
+
+private String getMostPopularGenre() {
+    java.util.Map<String, Integer> genreCount = new java.util.HashMap<>();
+    
+    for (Model.Game game : gameManager.getAllGames()) {
+        String genre = game.getGenre();
+        genreCount.put(genre, genreCount.getOrDefault(genre, 0) + 1);
+    }
+    
+    String popular = "None";
+    int max = 0;
+    
+    for (java.util.Map.Entry<String, Integer> entry : genreCount.entrySet()) {
+        if (entry.getValue() > max) {
+            max = entry.getValue();
+            popular = entry.getKey() + " (" + max + ")";
+        }
+    }
+    
+    return popular;
+}
+
+private void updateRecentGamesList() {
+    if (view.getHomeRecentGamesList() == null) return;
+    
+    javax.swing.DefaultListModel<String> model = new javax.swing.DefaultListModel<>();
+    java.util.Queue<Model.Game> recent = gameManager.getRecentGames();
+    
+    if (recent.isEmpty()) {
+        model.addElement("No recent games");
+    } else {
+        // Convert queue to array for display
+        Model.Game[] games = recent.toArray(new Model.Game[0]);
+        for (int i = games.length - 1; i >= 0; i--) { // Show newest first
+            model.addElement(games[i].getTitle() + " (" + games[i].getYear() + ")");
+        }
+    }
+    
+    view.getHomeRecentGamesList().setModel(model);
+}
+    
     private void setupActions() {
+        
+        
+                // Home button action
+          view.getHomeBtn().addActionListener(new java.awt.event.ActionListener() {
+              @Override
+              public void actionPerformed(java.awt.event.ActionEvent e) {
+                  showHomePanel(); // This should show actual Home panel
+              }
+          });
+          
+        view.getHomeBtn().addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                showHomePanel();
+                updateHomePanel();
+            }
+        });
+
+        // Home Refresh button
+        view.getHomeRefreshBtn().addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                updateHomePanel();
+                JOptionPane.showMessageDialog(view, "Statistics updated!");
+            }
+        });
         // Navigation buttons
+        
+        view.getBinarySearchBtn().addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                performBinarySearch();
+            }
+        });
+        
+        view.getSortAscBtn().addActionListener(new java.awt.event.ActionListener() {
+    @Override
+    public void actionPerformed(java.awt.event.ActionEvent e) {
+        sortGamesAscending();
+    }
+});
+
+// Sort Descending button
+view.getSortDescBtn().addActionListener(new java.awt.event.ActionListener() {
+    @Override
+    public void actionPerformed(java.awt.event.ActionEvent e) {
+        sortGamesDescending();
+    }
+});
         view.getHomeBtn().addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -265,39 +369,28 @@ public class GameController {
             JOptionPane.showMessageDialog(view, "Please select a game to delete");
             return;
         }
-        
+
         int confirm = JOptionPane.showConfirmDialog(view,
             "Are you sure you want to delete '" + selectedTitle + "'?",
             "Confirm Delete",
             JOptionPane.YES_NO_OPTION);
-        
+
         if (confirm == JOptionPane.YES_OPTION) {
-            // Since GameManager doesn't have delete method, we'll implement it here
-            ArrayList<Game> games = gameManager.getAllGames();
-            Game gameToRemove = null;
-            
-            // Find the game to remove
-            for (Game game : games) {
-                if (game.getTitle().equals(selectedTitle)) {
-                    gameToRemove = game;
-                    break;
-                }
-            }
-            
-            if (gameToRemove != null) {
-                games.remove(gameToRemove);
-                JOptionPane.showMessageDialog(view, 
-                    "Game '" + selectedTitle + "' deleted successfully!", 
-                    "Success", 
+            boolean deleted = gameManager.deleteGameByTitle(selectedTitle);
+
+            if (deleted) {
+                JOptionPane.showMessageDialog(view,
+                    "Game deleted successfully!",
+                    "Success",
                     JOptionPane.INFORMATION_MESSAGE);
-                
+
                 showViewPanel();
                 refreshGamesTable();
                 updateSelectionCombos();
             } else {
-                JOptionPane.showMessageDialog(view, 
-                    "Game not found!", 
-                    "Error", 
+                JOptionPane.showMessageDialog(view,
+                    "Game not found!",
+                    "Error",
                     JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -415,13 +508,10 @@ public class GameController {
         }
     }
     
-    // Navigation methods
     private void showHomePanel() {
-        JOptionPane.showMessageDialog(view, 
-            "Home dashboard will be implemented in final submission",
-            "Coming Soon",
-            JOptionPane.INFORMATION_MESSAGE);
-        showViewPanel();
+        java.awt.CardLayout cl = (java.awt.CardLayout) view.getCardPanel().getLayout();
+        cl.show(view.getCardPanel(), "card1"); // Show Home panel
+        updateHomePanel(); // Refresh statistics
     }
     
     private void showAddPanel() {
@@ -443,4 +533,129 @@ public class GameController {
         java.awt.CardLayout cl = (java.awt.CardLayout) view.getCardPanel().getLayout();
         cl.show(view.getCardPanel(), "card5");
     }
+    
+    // ===== NEW METHODS FOR COURSEWORK REQUIREMENTS =====
+    
+    // 1. Sort Ascending Button (call this from your button)
+    public void sortGamesAscending() {
+        gameManager.sortByYearAscending();
+        refreshGamesTable();
+        JOptionPane.showMessageDialog(view, 
+            "Games sorted by year (ascending)", 
+            "Sort Complete", 
+            JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    // 2. Sort Descending Button (call this from your button)
+    public void sortGamesDescending() {
+        gameManager.sortByYearDescending();
+        refreshGamesTable();
+        JOptionPane.showMessageDialog(view, 
+            "Games sorted by year (descending)", 
+            "Sort Complete", 
+            JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    // 3. Binary Search Method
+    public void performBinarySearch() {
+        // Ask user for year to search
+        String input = JOptionPane.showInputDialog(view,
+            "Enter year to search (Binary Search):",
+            "Binary Search",
+            JOptionPane.QUESTION_MESSAGE);
+        
+        if (input != null && !input.trim().isEmpty()) {
+            try {
+                int year = Integer.parseInt(input.trim());
+                
+                // First sort the games
+                gameManager.sortByYearAscending();
+                ArrayList<Game> games = gameManager.getAllGames();
+                
+                // Perform binary search
+                int left = 0;
+                int right = games.size() - 1;
+                boolean found = false;
+                
+                while (left <= right) {
+                    int mid = left + (right - left) / 2;
+                    int midYear = games.get(mid).getYear();
+                    
+                    if (midYear == year) {
+                        // Found a game with this year
+                        DefaultTableModel model = (DefaultTableModel) view.getGamesTable().getModel();
+                        model.setRowCount(0); // Clear table
+                        model.addRow(games.get(mid).toTableRow()); // Show found game
+                        
+                        JOptionPane.showMessageDialog(view,
+                            "Found: " + games.get(mid).getTitle() + " (" + year + ")",
+                            "Binary Search Result",
+                            JOptionPane.INFORMATION_MESSAGE);
+                        found = true;
+                        break;
+                    }
+                    
+                    if (midYear < year) {
+                        left = mid + 1;
+                    } else {
+                        right = mid - 1;
+                    }
+                }
+                
+                if (!found) {
+                    JOptionPane.showMessageDialog(view,
+                        "No game found with year: " + year,
+                        "Binary Search Result",
+                        JOptionPane.WARNING_MESSAGE);
+                    refreshGamesTable(); // Show all games again
+                }
+                
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(view,
+                    "Please enter a valid year number",
+                    "Input Error",
+                    JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+    
+    // 4. Get Statistics for Home Panel
+    public String getStatistics() {
+        ArrayList<Game> games = gameManager.getAllGames();
+        int totalGames = games.size();
+        
+        // Count games by platform
+        int pcCount = 0;
+        int psCount = 0;
+        int xboxCount = 0;
+        int switchCount = 0;
+        int mobileCount = 0;
+        int otherCount = 0;
+        
+        for (Game game : games) {
+            String platform = game.getPlatform().toLowerCase();
+            if (platform.contains("pc")) {
+                pcCount++;
+            } else if (platform.contains("playstation") || platform.contains("ps")) {
+                psCount++;
+            } else if (platform.contains("xbox")) {
+                xboxCount++;
+            } else if (platform.contains("switch")) {
+                switchCount++;
+            } else if (platform.contains("mobile")) {
+                mobileCount++;
+            } else {
+                otherCount++;
+            }
+        }
+        
+        return "Total Games: " + totalGames + "\n" +
+               "PC Games: " + pcCount + "\n" +
+               "PlayStation Games: " + psCount + "\n" +
+               "Xbox Games: " + xboxCount + "\n" +
+               "Switch Games: " + switchCount + "\n" +
+               "Mobile Games: " + mobileCount + "\n" +
+               "Other Games: " + otherCount;
+    }
+    
 }

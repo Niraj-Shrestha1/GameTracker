@@ -1,13 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Model;
 
-/**
- *
- * @author Niraj Shrestha
- */
 public class Game {
     private String title;
     private String platform;
@@ -56,8 +48,14 @@ public class Game {
         this.genre = genre;
     }
     
-    // For displaying in table later
+    // For displaying in table - ADD THIS IF MISSING
     public Object[] toTableRow() {
         return new Object[]{title, platform, year, genre};
+    }
+    
+    // For displaying in combo boxes - ADD THIS
+    @Override
+    public String toString() {
+        return title;
     }
 }

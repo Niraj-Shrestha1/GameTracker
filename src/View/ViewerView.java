@@ -77,6 +77,9 @@ public class ViewerView extends javax.swing.JFrame {
         Jtable1 = new javax.swing.JTable();
         jTextField3 = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
+        jButton12 = new javax.swing.JButton();
+        jButton13 = new javax.swing.JButton();
+        jButton14 = new javax.swing.JButton();
         Update = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jComboBox3 = new javax.swing.JComboBox<>();
@@ -95,6 +98,19 @@ public class ViewerView extends javax.swing.JFrame {
         jComboBox6 = new javax.swing.JComboBox<>();
         jButton10 = new javax.swing.JButton();
         jButton11 = new javax.swing.JButton();
+        Home = new javax.swing.JPanel();
+        jLabel12 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel13 = new javax.swing.JLabel();
+        homeTotalLabel = new javax.swing.JLabel();
+        homeTotalValueLabel = new javax.swing.JLabel();
+        homeRecentLabel = new javax.swing.JLabel();
+        homeRecentValueLabel = new javax.swing.JLabel();
+        homeGenreLabel = new javax.swing.JLabel();
+        homeGenreValueLabel = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        homeRecentGamesList = new javax.swing.JList<>();
+        homeRefreshBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -220,26 +236,54 @@ public class ViewerView extends javax.swing.JFrame {
 
         jLabel5.setText("Search:");
 
+        jButton12.setText("Sort descending");
+        jButton12.addActionListener(this::jButton12ActionPerformed);
+
+        jButton13.setText("Sort ascending");
+        jButton13.addActionListener(this::jButton13ActionPerformed);
+
+        jButton14.setText("Binary Search");
+        jButton14.addActionListener(this::jButton14ActionPerformed);
+
         javax.swing.GroupLayout ViewLayout = new javax.swing.GroupLayout(View);
         View.setLayout(ViewLayout);
         ViewLayout.setHorizontalGroup(
             ViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ViewLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(ViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton13)
+                    .addGroup(ViewLayout.createSequentialGroup()
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(53, 53, 53)))
+                .addGroup(ViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(ViewLayout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(ViewLayout.createSequentialGroup()
+                        .addGap(99, 99, 99)
+                        .addComponent(jButton12)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(ViewLayout.createSequentialGroup()
-                .addGap(61, 61, 61)
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(299, 299, 299)
+                .addComponent(jButton14)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         ViewLayout.setVerticalGroup(
             ViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ViewLayout.createSequentialGroup()
-                .addGap(0, 255, Short.MAX_VALUE)
+                .addGap(0, 99, Short.MAX_VALUE)
+                .addComponent(jButton14)
+                .addGap(18, 18, 18)
                 .addGroup(ViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addGap(18, 18, 18)
+                .addGap(49, 49, 49)
+                .addGroup(ViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton12)
+                    .addComponent(jButton13))
+                .addGap(61, 61, 61)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -384,6 +428,92 @@ public class ViewerView extends javax.swing.JFrame {
 
         jPanel2.add(Delete, "card5");
 
+        Home.setLayout(new java.awt.BorderLayout());
+
+        jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel12.setText("Game Tracker Dashboard");
+        Home.add(jLabel12, java.awt.BorderLayout.PAGE_START);
+
+        jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel13.setText("Statistics");
+
+        homeTotalLabel.setText("Total Games:");
+
+        homeTotalValueLabel.setText("0");
+
+        homeRecentLabel.setText("Recent Games:");
+
+        homeRecentValueLabel.setText("0");
+
+        homeGenreLabel.setText("Most Popular Genre:");
+
+        homeRecentGamesList.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane2.setViewportView(homeRecentGamesList);
+
+        homeRefreshBtn.setText("Refresh Statistics");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(183, 183, 183)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                                    .addComponent(homeGenreLabel)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(homeGenreValueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel3Layout.createSequentialGroup()
+                                    .addComponent(homeRecentLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(homeRecentValueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel3Layout.createSequentialGroup()
+                                    .addComponent(homeTotalLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(65, 65, 65)
+                                    .addComponent(homeTotalValueLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(314, 314, 314)
+                        .addComponent(homeRefreshBtn)))
+                .addContainerGap(367, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(61, 61, 61)
+                .addComponent(jLabel13)
+                .addGap(41, 41, 41)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(homeTotalLabel)
+                    .addComponent(homeTotalValueLabel))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(homeRecentLabel)
+                    .addComponent(homeRecentValueLabel))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(homeGenreLabel)
+                    .addComponent(homeGenreValueLabel))
+                .addGap(59, 59, 59)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(42, 42, 42)
+                .addComponent(homeRefreshBtn)
+                .addContainerGap(44, Short.MAX_VALUE))
+        );
+
+        Home.add(jPanel3, java.awt.BorderLayout.CENTER);
+
+        jPanel2.add(Home, "card1");
+
         getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
 
         pack();
@@ -492,8 +622,38 @@ public javax.swing.JPanel getCardPanel() {
     public javax.swing.JButton getDeleteNavBtn() {
         return jButton5;
     }
+    public javax.swing.JButton getSortDescBtn() {
+    return jButton12; 
+    }
+    public javax.swing.JButton getSortAscBtn() {
+    return jButton13; 
+    }
+
+    public javax.swing.JButton getBinarySearchBtn() {
+        return jButton14; 
+    }
     
-    
+
+public javax.swing.JLabel getHomeTotalValueLabel() {
+    return homeTotalValueLabel;
+}
+
+public javax.swing.JLabel getHomeRecentValueLabel() {
+    return homeRecentValueLabel;
+}
+
+public javax.swing.JLabel getHomeGenreValueLabel() {
+    return homeGenreValueLabel;
+}
+
+public javax.swing.JList<String> getHomeRecentGamesList() {
+    return homeRecentGamesList;
+}
+
+public javax.swing.JButton getHomeRefreshBtn() {
+    return homeRefreshBtn;
+}
+
     
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
@@ -544,6 +704,18 @@ public javax.swing.JPanel getCardPanel() {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton11ActionPerformed
 
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton12ActionPerformed
+
+    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton13ActionPerformed
+
+    private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton14ActionPerformed
+
     /**
      * 
      * @param args the command line arguments
@@ -574,12 +746,24 @@ public javax.swing.JPanel getCardPanel() {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Add;
     private javax.swing.JPanel Delete;
+    private javax.swing.JPanel Home;
     private javax.swing.JTable Jtable1;
     private javax.swing.JPanel Update;
     private javax.swing.JPanel View;
+    private javax.swing.JLabel homeGenreLabel;
+    private javax.swing.JLabel homeGenreValueLabel;
+    private javax.swing.JList<String> homeRecentGamesList;
+    private javax.swing.JLabel homeRecentLabel;
+    private javax.swing.JLabel homeRecentValueLabel;
+    private javax.swing.JButton homeRefreshBtn;
+    private javax.swing.JLabel homeTotalLabel;
+    private javax.swing.JLabel homeTotalValueLabel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
+    private javax.swing.JButton jButton12;
+    private javax.swing.JButton jButton13;
+    private javax.swing.JButton jButton14;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -597,6 +781,8 @@ public javax.swing.JPanel getCardPanel() {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -607,7 +793,9 @@ public javax.swing.JPanel getCardPanel() {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
